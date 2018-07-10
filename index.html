@@ -8,19 +8,29 @@
 </head>
 <body>
     
-    <div ms-controller="box">
-        <div style=" background: #a9ea00;" ms-css-width="w" ms-css-height="h"  ms-click="click"></div>
-        <p>{{ w }} x {{ h }}</p>
-        <p>W: <input type="text" ms-duplex="w" data-duplex-event="change"/></p>
-        <p>H: <input type="text" ms-duplex="h" /></p>
-    </div>
+<div id="a">
+aaa
+</div>
     <script>
-var class2type = {}
-"Boolean Number String Function Array Date RegExp Object Error".replace(/[^, ]+/g, function (name) {
-    class2type["[object " + name + "]"] = name.toLowerCase()
-})
-console.log(class2type)
-console.log(document.documentElement)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          console.log(mutation);
+          console.log(mutation.type);
+        })
+      })
+
+      // 传入目标节点和观察选项
+      observer.observe(document.querySelector('#a'), { attributes: true,
+        childList: true,
+        characterData: true
+      });
+
+      // 随后,你还可以停止观察
+      //  observer.disconnect();
+
+      setTimeout(function(){
+        document.querySelector('#a').innerHTML = "change"
+      },1111)
     </script>
 
 

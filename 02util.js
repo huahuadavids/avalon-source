@@ -85,14 +85,55 @@ avalon = function (el) { //创建jQuery式的无new 实例化结构
 }
 
 
-/*视浏览器情况采用最快的异步回调*/
-avalon.nextTick = new function () {// jshint ignore:line
+
+
+/*
+* @target 根据浏览器情况采用最快的异步回调
+* @description 浏览器为了避免setTimeout嵌套可能出现卡死ui线程的情况，
+* 为setTimeout设置了最小的执行时间间隔，不同浏览器的最小执行时间间隔都不一样。
+* chrome下测试 setTimeout 0 的实际执行时间间隔大概在12ms左右
+*/
+
+// 来自网上
+var setZeroTimeout = (function(){
+  if(window.setImmediate){
+    //IE10+版本，使用原生setImmediate
+    return window.setImmediate;
+  }
+  else if("onreadystatechange" in document.createElement("script")){
+    return function(){
+        /* 使用onreadystatechange的版本 */
+    }
+  }
+  else if(window.postMessage){
+    return function(){
+        /* 使用onmessage的异步执行版本 */
+    }
+  }
+  else {
+    return window.setTimeout;
+  }
+
+})();
+
+avalon.nextTick = new function () {
+
+
+    //IE 10+ node 支持 最快实现异步回调
     var tickImmediate = window.setImmediate
+
+    // Mutation Observer API 用来监视 DOM 变动 它的特点： H5接口
+    // 1. 它等待所有脚本任务完成后，才会运行（即异步触发方式）。
+    // 2. 它把 DOM 变动记录封装成一个数组进行处理，而不是一条条个别处理 DOM 变动。
+    // 3. 它既可以观察 DOM 的所有类型变动，也可以指定只观察某一类变动。
     var tickObserver = window.MutationObserver
+    // 老版本的谷歌和火狐，则需要使用带前缀的 MO
+    // var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
     if (tickImmediate) {
         return tickImmediate.bind(window)
     }
 
+    // 取出事件队列中的事件执行
     var queue = []
     function callback() {
         var n = queue.length
@@ -100,6 +141,8 @@ avalon.nextTick = new function () {// jshint ignore:line
             queue[i]()
         }
         queue = queue.slice(n)
+        // todo
+        // 返回空数组 为何不直接 = []
     }
 
     if (tickObserver) {
@@ -117,4 +160,28 @@ avalon.nextTick = new function () {// jshint ignore:line
     return function (fn) {
         setTimeout(fn, 4)
     }
-}// jshint ignore:line
+}
+
+/*
+* @MutationObserver 测试
+*     var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          console.log(mutation);
+          console.log(mutation.type);
+        })
+      })
+
+      // 传入目标节点和观察选项
+      observer.observe(document.querySelector('#a'), { attributes: true,
+        childList: true,
+        characterData: true
+      });
+
+      // 随后,你还可以停止观察
+      //  observer.disconnect();
+
+      setTimeout(function(){
+        document.querySelector('#a').innerHTML = "change"
+      },1111)
+    </script>
+*/
