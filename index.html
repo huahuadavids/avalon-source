@@ -11,14 +11,93 @@
 <div id="a">
   <img src="" alt="">
 </div>
+<script src="copy.js"></script>
 <script>
 
-   contains = function (root, el) {
-      while ((el = el.parentNode))
-        if (el === root)
-          return true
-      return false
+  function deepClone(obj){
+    let objClone = {}
+      for(key in obj){
+          if(typeof obj[key] === "object"){
+            objClone[key] = deepClone(obj[key]);
+          }else{
+            objClone[key] = obj[key];
+          }
+      }
+    return objClone;
   }
+
+  var a = {
+    name : "hua"
+  }
+
+  var b = deepClone(a);
+  b.name = "huahau"
+  console.log(a)
+  console.log(b)
+
+  
+
+
+  function extend(){
+
+    function type(target){
+      return Object.prototype.toString.call(target)
+    }
+    function isObj(target){
+      return type(target) === "[object Object]"
+    }
+
+    function isArr(target){
+      return type(target) === "[object Array]"
+    }
+
+    function isObjs(target){
+      return isObj(target) || isArr(target);
+    }
+    var args = arguments;
+    var len = args.length;
+    if(len < 3){
+      console.error("参数必须多于2位");
+      return;
+    }
+    var deep = args[0];
+    if( type(deep) !== '[object Boolean]'){
+      console.error("第一个参数必须为布尔值，表示是否深拷贝");
+      return;
+    }
+    var target = args[1]; //合并到target
+    if(!isObjs(target)){
+      console.error("目标对象必须为数组或者对象");
+      return;
+    }
+
+    if(isObj(target)){
+      var i = 2;
+      for(; i < len; i ++){
+        console.log(args[i])
+      }
+    }
+
+    if(isArr(target)){
+      var i = 2;
+      for(; i < len; i ++){
+        var item = args[i]
+        if(!isObjs(item)){
+          target.push(item)
+        }
+        if(isObj(item)){
+          for(var key of item){
+
+          }
+        }
+
+      }
+    }
+  }
+
+  extend(false,{},1,2,3,4,5)
+
+
 </script>
 </body>
 </html>

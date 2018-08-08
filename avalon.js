@@ -39,7 +39,7 @@
   }
 
   var isFunction = function (fn) {
-    return serialize.call(fn) === "[object Function]"
+    return oproto.toString.call(fn) === "[object Function]"
   }
 
   avalon.isFunction = isFunction
