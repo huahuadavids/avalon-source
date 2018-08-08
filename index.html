@@ -1,41 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
 </head>
 <body>
-    
+
 <div id="a">
-aaa
+  <img src="" alt="">
 </div>
-    <script>
-      var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          console.log(mutation);
-          console.log(mutation.type);
-        })
-      })
-
-      // 传入目标节点和观察选项
-      observer.observe(document.querySelector('#a'), { attributes: true,
-        childList: true,
-        characterData: true
-      });
-
-      // 随后,你还可以停止观察
-      //  observer.disconnect();
-
-      setTimeout(function(){
-        document.querySelector('#a').innerHTML = "change"
-      },1111)
-    </script>
-
-
 <script>
 
+   contains = function (root, el) {
+      while ((el = el.parentNode))
+        if (el === root)
+          return true
+      return false
+  }
 </script>
 </body>
 </html>
